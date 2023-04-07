@@ -41,7 +41,7 @@ if(data.value?.long_url) {
       })
    }
 
-   useRedirect(data.value?.long_url)
+   useRedirect(data.value.long_url, 302)
 }
 </script>
 <template>
