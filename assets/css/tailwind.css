@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+   @apply bg-black text-white/70;
+}
+
+body::before {
+   width: 100%;
+   height: 100%;
+   content: "";
+   position: fixed;
+   z-index: -1;
+   background: radial-gradient(75.61% 75.61% at 50% 24.39%, rgba(30, 50, 185, 0.355) 0%, rgba(30, 50, 185, 0) 100%);
+   /* background: radial-gradient(75% 75% at 50% 25%, rgba(26, 122, 167, 0.4) 0%, rgba(12, 36, 193, 0) 100%); */
+}
+
+.container {
+   @apply max-w-5xl mx-auto px-5;
+}
+
+
+/* rgb(68,94,182) */
+/* rgb(102,64,215) */
+.heading {
+   background: linear-gradient(180deg, rgb(3, 232, 190) 0%, rgb(79,90,216) 180%);
+   background-clip: text;
+   --webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+}
+.heading-white {
+   background: linear-gradient(180deg, rgb(242, 242, 242) 0%, rgb(32, 50, 250) 180%);
+   background-clip: text;
+   --webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+}
+.bg-blur {
+   @apply bg-black/20 backdrop-blur-md
+}
+
+.btn {
+   @apply py-2 px-3 md:px-4 rounded-sm transition ease-linear duration-150 hover:border-teal-500/50;
+   /* background: linear-gradient(90deg, rgb(109,70,222) 5% , rgb(35,21,89) 90%) */
+
+}
+.btn-primary {
+   background: linear-gradient(90deg, rgba(64,65,87, 0.3) 5% , rgb(35,21,89, 0.5) 90%);
+   border: 1px solid rgb(58,59,73);
+}
+.btn-action {
+   background: linear-gradient(90deg, rgb(68,94,182) 0%, rgb(27, 17, 59) 180%);
+   border: 1px solid rgb(58,59,73);
+}
+.btn-purple {
+   background: linear-gradient(90deg, rgb(107,67,222) 0%, rgb(27, 17, 59) 180%);
+   border: 1px solid rgb(58,59,73);
+}
+
+.card {
+   @apply min-w-[350px] bg-white/5 rounded-lg shadow-lg p-5 border border-white/10 backdrop-blur-md;
+}
+
+input[type="text"], input[type="email"], input[type="password"] {
+   @apply w-full py-2 px-2 bg-transparent border-b border-white/20 rounded;
+}
+.form-item {
+   @apply flex flex-col gap-3;
+}
+form label {
+   @apply text-white/70 text-sm;
+}

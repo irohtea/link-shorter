@@ -1,0 +1,120 @@
+<script lang="ts" setup>
+
+const supabaseAuth = useSupabaseAuthClient()
+
+const isLogginIn = ref<boolean>(true)
+const user = reactive({
+   email: '',
+   password: ''
+})
+const errors = ref<string>('')
+
+const handleGithubLogin = () => {
+   supabaseAuth.auth.signInWithOAuth({
+      provider: 'github',
+   })
+}
+const handleLoginForm = async () => {
+   if(!user.email || !user.password) {
+      errors.value = 'Please fill all the fields'
+      return
+   }
+
+   if(!isLogginIn.value) {
+      return handleSignUp()
+   }
+   try {
+      const {data, error} = await supabaseAuth.auth.signInWithPassword({
+         email: user.email,
+         password: user.password
+      })
+   if(error) {
+      errors.value = error.message
+      return
+   }
+   if(data) {
+      useRouter().push('/dashboard')
+   }
+   console.log({data})
+
+   } catch (err) {
+      errors.value = 'Something went wrong'
+   }
+}
+const handleSignUp = async () => {
+   try {
+      const {data, error} = await supabaseAuth.auth.signUp({
+         email: user.email,
+         password: user.password
+      })
+   if(error) {
+      errors.value = error.message
+      return
+   }
+   console.log({data});
+   
+   errors.value = 'Please check your email to verify your account'
+   } catch (err) {
+      errors.value = 'Something went wrong'
+   }
+}
+
+</script>
+
+<template>
+   <section class="h-screen grid place-content-center">
+      <div class="container">
+         <div class="card">
+
+            <form @submit.prevent="handleLoginForm" class="flex flex-col gap-4">
+               <div class="form-item">
+                  <label for="email">Email</label>
+                  <input
+                     v-model="user.email" 
+                     type="email" 
+                     name="email" 
+                     id="email" 
+                     placeholder="jordan@gmail.com"
+                  >
+               </div>
+               <div class="form-item">
+                  <label for="password">Password</label>
+                  <input
+                     v-model="user.password" 
+                     type="password" 
+                     name="password" 
+                     id="password" 
+                  >
+               </div>
+               <button 
+                  type="submit" 
+                  class="btn-action w-full py-3 mt-3 text-lg font-medium rounded">
+                  <template v-if="isLogginIn">Login</template>
+                  <template v-else>Signup</template>
+               </button>
+              
+               <div class="text-red-600 text-center" :class="{'text-teal-500': errors === 'Please check your email to verify your account' }">{{ errors }}</div>
+            </form>
+
+            <hr class="my-6  border-white/10">
+
+            <button class="btn-primary w-full py-4 px-6 flex justify-center gap-2" @click="handleGithubLogin">
+               <svg class="stroke-white fill-white/70 w-6 h-6" viewBox="0 0 448 448" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="1.5" stroke="currentColor">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M224 0C100.3 0 0 102.8 0 229.7C0 331.2 64.2 417.2 153.2 447.6C164.4 449.7 168.5 442.6 168.5 436.5C168.5 431 168.3 416.6 168.2 397.4C105.9 411.3 92.7 366.6 92.7 366.6C82.5 340.1 67.8 333 67.8 333C47.5 318.7 69.3 319 69.3 319C91.8 320.6 103.6 342.7 103.6 342.7C123.6 377.8 156 367.7 168.8 361.8C170.8 347 176.6 336.8 183 331.1C133.3 325.3 81 305.6 81 217.6C81 192.5 89.7 172 104 156C101.7 150.2 94 126.8 106.2 95.2C106.2 95.2 125 89 167.8 118.7C185.7 113.6 204.8 111.1 223.9 111C242.9 111.1 262.1 113.6 280 118.7C322.8 89 341.5 95.2 341.5 95.2C353.7 126.8 346 150.2 343.7 156C358 172.1 366.7 192.6 366.7 217.6C366.7 305.8 314.3 325.2 264.4 330.9C272.4 338 279.6 352 279.6 373.4C279.6 404.1 279.3 428.9 279.3 436.4C279.3 442.5 283.3 449.7 294.7 447.4C383.9 417.1 448 331.1 448 229.7C448 102.8 347.7 0 224 0Z"/>
+               </svg>
+               Continue with Github
+            </button>
+            <div class="text-center mt-5">
+                  <button 
+                     type="button" 
+                     class="text-center" 
+                     @click="isLogginIn = !isLogginIn"
+                  >
+                     <template v-if="isLogginIn">Don't have an account? <span class="text-teal-500">Signup</span></template>
+                     <template v-else>Already have an account? <span class="text-teal-500">Login</span></template>
+                  </button>
+               </div>
+         </div>
+      </div>
+   </section>
+</template>
