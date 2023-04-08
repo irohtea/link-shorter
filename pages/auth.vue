@@ -1,12 +1,21 @@
 <script lang="ts" setup>
+useHead({
+  title: "Authenticate",
+})
 
+const isAuth = useSupabaseUser()
 const supabaseAuth = useSupabaseAuthClient()
 
 const isLogginIn = ref<boolean>(true)
-const user = reactive({
+
+const user = ref<{
+   email: string
+   password: string
+}>({
    email: '',
    password: ''
 })
+
 const errors = ref<string>('')
 
 const handleGithubLogin = () => {
@@ -15,37 +24,31 @@ const handleGithubLogin = () => {
    })
 }
 const handleLoginForm = async () => {
-   if(!user.email || !user.password) {
+   if(!user.value.email || !user.value.password) {
       errors.value = 'Please fill all the fields'
       return
    }
-
    if(!isLogginIn.value) {
       return handleSignUp()
    }
-   try {
-      const {data, error} = await supabaseAuth.auth.signInWithPassword({
-         email: user.email,
-         password: user.password
-      })
+
+   const {data, error} = await supabaseAuth.auth.signInWithPassword({
+      email: user.value.email,
+      password: user.value.password
+   })
+
    if(error) {
       errors.value = error.message
-      return
+   } else {
+      useRouter().push("/dashboard")
    }
-   if(data) {
-      useRouter().push('/dashboard')
-   }
-   console.log({data})
 
-   } catch (err) {
-      errors.value = 'Something went wrong'
-   }
 }
 const handleSignUp = async () => {
    try {
       const {data, error} = await supabaseAuth.auth.signUp({
-         email: user.email,
-         password: user.password
+         email: user.value.email,
+         password: user.value.password
       })
    if(error) {
       errors.value = error.message
@@ -106,7 +109,7 @@ const handleSignUp = async () => {
             </button>
             <div class="text-center mt-5">
                   <button 
-                     type="button" 
+                     type="submit" 
                      class="text-center" 
                      @click="isLogginIn = !isLogginIn"
                   >

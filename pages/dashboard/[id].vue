@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Database } from "~/types/supabase"
-
+const config = useRuntimeConfig();
 const { id } = useRoute().params
 const client = useSupabaseClient<Database>()
 
@@ -16,8 +16,11 @@ const { data } = useAsyncData(id.toString(), async () => {
 
    <section v-if="data" class="pt-32 container">
       <div>
-         <div class="flex">
-            <h1  class="text-5xl font-bold text-teal-500">/{{ data.key }}</h1>
+         <div class="flex items-center gap-3">
+            <h1 class="text-5xl font-bold text-teal-500">/{{ data.key }}</h1>
+            <CopyButton
+               :data="config.public.appUrl  + '/' + data.key"
+            />
          </div>
          <div class="mt-2"><span class="text-white/40">Created at:</span>  {{ data.created_at?.slice(0, 10) }}</div>
       </div>
@@ -26,8 +29,11 @@ const { data } = useAsyncData(id.toString(), async () => {
             <div class="text-4xl font-bold text-white/70">{{ data.total_clicks }}</div>
             <div class="text-white/70">Total Clicks</div>
          </div>
-         <div class="card w-full flex items-center">
-            <div> {{ data.long_url }}</div>
+         <div class="card w-full flex items-center justify-between flex-wrap gap-2">
+            <div > {{ data.long_url.slice(0, 40) }}...</div>
+            <CopyButton 
+            :data="data.long_url"
+            />
          </div>
       </div>
       <div class="mt-10">
