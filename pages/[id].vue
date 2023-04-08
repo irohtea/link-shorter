@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import geoip from "geoip-lite"
+import geoip from 'geoip-lite'
 import { Database } from "~/types/supabase"
 
 const params = useRoute().params
@@ -40,10 +40,10 @@ if(data.value?.long_url) {
          country: geoLoc?.country,
       })
    }
-
    useRedirect(data.value.long_url, 302)
 }
 </script>
+
 <template>
    <div class="grid place-content-center h-screen">Redirecting...</div>
 </template>

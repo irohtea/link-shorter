@@ -11,7 +11,7 @@ const user = useSupabaseUser()
 const client = useSupabaseClient<Database>()
 
 const { data, refresh } = useAsyncData('links', async () => {
-   const { data, error } = await client.from('links').select('*').eq('user_id', user.value?.id)
+   const { data, error } = await client.from('links').select('*').eq('user_id', user.value?.id).order('created_at', { ascending: false })
 
    return data
 })
