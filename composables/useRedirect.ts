@@ -1,7 +1,7 @@
 import { useNuxtApp } from "#app";
 import { sendRedirect } from 'h3'
 
-export default function useExternalRedirect(url: string,code = 301): never | Promise<void> {
+export default function useRedirect(url: string,code = 301): never | Promise<void> {
    if (/^https?:\/\//.test(url)) {
      if (process.server) {
        const nuxtApp = useNuxtApp();
@@ -18,4 +18,3 @@ export default function useExternalRedirect(url: string,code = 301): never | Pro
    }
    throw new Error("Cannot redirect to invalid URL.");
  }
-useRedirect

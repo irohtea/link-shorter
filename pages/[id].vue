@@ -32,7 +32,7 @@ if(data.value?.long_url) {
    if(ua && ua.ip) {
       const geoLoc = geoip.lookup(ua.ip)
 
-      const {data: res, error } = await client.from('clicks').insert({
+      const {data:res, error } = await client.from('clicks').insert({
          user_agent: ua.userAgent,
          link_id: data.value.id,
          ip: ua.ip,
