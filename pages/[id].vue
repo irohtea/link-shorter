@@ -1,53 +1,51 @@
 <script lang="ts" setup>
-import geoip from "geoip-lite"
-import { Database } from "~/types/supabase"
+import geoip from "geoip-lite";
+import { Database } from "~~/types/supabase";
 
-const params = useRoute().params
-const client = useSupabaseClient<Database>()
+const client = useSupabaseClient<Database>();
+const params = useRoute().params;
 
-//get the params id
-if(!params.id) {
-   throw createError({
-      statusCode: 404, 
-      statusMessage: 'Not found'
-   })
+const { data } = await client.from("links").select("*").eq("key", params.id).single();
+
+if (data) {
+
+  const clickData: any = {};
+
+  const ua = useUserAgent();
+
+  console.log({ ua });
+
+  if (ua) {
+    clickData.user_agent = ua.userAgent;
+    clickData.ip = ua.ip;
+    if (ua.ip) {
+      const geo = geoip.lookup(ua.ip);
+      if (geo) {
+        clickData.country = geo.country;
+        clickData.city = geo.city;
+      }
+    }
+  }
+
+  const click = await client.from("clicks").insert({
+    link_id: data.id,
+    ...clickData,
+  });
+
+  console.log({ click });
+
+  useRedirect(data.long_url, 302);
+} else {
+  throw createError({
+    statusCode: 404,
+    message: "Link not found",
+  });
 }
-// fetch the data from the supabase
-const { data } = await useAsyncData('link', async () => {
-   const { data, error } = await client.from('links').select('*').eq('key', params.id).single()
 
-   if(error) {
-      throw createError({
-         statusCode: 404, 
-         statusMessage: 'Not found'
-      })
-   }
-
-   return data
-})
-
-if(data.value?.long_url) {
-   const ua = useUserAgent()
-
-   if(ua && ua.ip) {
-      const geoLoc = geoip.lookup(ua.ip)
-
-      const {data: res, error } = await client.from('clicks').insert({
-         user_agent: ua.userAgent,
-         link_id: data.value.id,
-         ip: ua.ip,
-         city: geoLoc?.city,
-         country: geoLoc?.country,
-      })
-   }
-
-   useRedirect(data.value.long_url, 302)
-}
 </script>
 <template>
    <div class="grid place-content-center h-screen">Redirecting...</div>
 </template>
-<!-- useRedirect(data.value?.long_key) -->
 
 
 
